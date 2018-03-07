@@ -2,7 +2,23 @@ App = {
   web3Provider: null,
   contracts: {},
 
-  init: function() { 
+  init: function() {
+    // Load pets.
+    // $.getJSON('../pets.json', function(data) {
+    //   var petsRow = $('#petsRow');
+    //   var petTemplate = $('#petTemplate');
+
+    //   for (i = 0; i < data.length; i ++) {
+    //     petTemplate.find('.panel-title').text(data[i].name);
+    //     petTemplate.find('img').attr('src', data[i].picture);
+    //     petTemplate.find('.pet-breed').text(data[i].breed);
+    //     petTemplate.find('.pet-age').text(data[i].age);
+    //     petTemplate.find('.pet-location').text(data[i].location);
+    //     petTemplate.find('.btn-adopt').attr('data-id', data[i].id);
+
+    //     petsRow.append(petTemplate.html());
+    //   }
+    // });
 
     return App.initWeb3();
   },
@@ -38,13 +54,31 @@ App = {
 
   bindEvents: function() {
     $(document).on('click', '#sendClick', App.handleSplit);
-  },  
+  },
+
+  // markAdopted: function(adopters, account) {
+  //   var splitterInstance;
+
+  // App.contracts.Splitter.deployed().then(function(instance) {
+  //   splitterInstance = instance;
+
+  //   return splitterInstance.getAdopters.call();
+  //     }).then(function(adopters) {
+  //       for (i = 0; i < adopters.length; i++) {
+  //         if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
+  //           $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
+  //         }
+  //       }
+  //     }).catch(function(err) {
+  //       console.log(err.message);
+  //   });
+  // },
 
   handleSplit: function(event) {
     event.preventDefault();
 
     var addr1 = $('#addr1').val();
-    var addr1 = $('#addr2').val();
+    var addr2 = $('#addr2').val();
     var amount = $('#amount').val();
 
     var splitterInstance;
@@ -60,7 +94,7 @@ App = {
         splitterInstance = instance;
 
         // Execute adopt as a transaction by sending account
-        return splitterInstance.split(addr1, addr1, amount);
+        return splitterInstance.split(addr1, addr2, amount);
       }).then(function(result) {
         return console.log("stana");
       }).catch(function(err) {

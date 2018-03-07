@@ -10,6 +10,10 @@
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
+    <style>
+        .centered { margin:auto; float: none}
+    </style>
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -19,37 +23,38 @@
   </head>
   <body>
     <div class="container">
+
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
           <h1 class="text-center">Splitter</h1>
           <hr/>
-          <br/>
         </div>
       </div>
 
       <!--<div id="petsRow" class="row">
          PETS LOAD HERE 
       </div> -->
-    </div>
-
-    <div class="center-block">
-      <div class="col-lg-4">
-        <div class="panel panel-default panel-pet">
-          <div class="panel-heading">
-            <h3 class="panel-title">Split</h3>
-          </div>
-          <div class="panel-body">
-            <form>
-              addr1: <input class="input" id="addr1" name="addr1">
-              addr2: <input class="input" id="addr2" name="addr2">
-              amount: <input class="input" id="amount" name="amount">
-              <button class="btn btn-split" type="button" id="sendClick">Send</button>
-            </form>
+      
+      <div class="row">
+        <div class="col-lg-4 centered">
+          <div class="panel panel-default panel-pet">
+            <div class="panel-heading">
+              <h3 class="panel-title">Split</h3>
+            </div>
+            <div class="panel-body">
+              <form>
+                <div><label for="addr1">Аddr1:</label> <input class="input" id="addr1"></div>
+                <div><label for="addr2">Аddr2:</label> <input class="input" id="addr2"></div>
+                <div><label for="amount">Аmount:</label> <input class="input" id="amount"></div>
+                <button class="btn btn-split" type="button" id="sendClick">Send</button>
+                <button class="btn btn-get" type="button" id="getClick">Get</button>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </div>    
-
+      </div>    
+      
+    </div>
     <!-- <div id="petTemplate" style="display: none;">
       <div class="col-sm-6 col-md-4 col-lg-3">
         <div class="panel panel-default panel-pet">
