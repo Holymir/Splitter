@@ -30,7 +30,7 @@ contract('Splitter', function(accounts) {
 		}				  
 	});
 
-	it("should not be able send more ethers than the ballance", async function() {
+	it("should not be able send more than senders ballance", async function() {
 
 		try {
 
