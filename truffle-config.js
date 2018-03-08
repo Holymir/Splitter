@@ -1,12 +1,21 @@
 module.exports = {
-  // See <http://truffleframework.com/docs/advanced/configuration>
-  // for more about customizing your Truffle configuration!
+
   networks: {
     development: {
+      host: "localhost",
+      port: 8545,
+      gas: 6721975,
+      network_id: "*"
+    },    
+    
+    "ganache": {
       host: "127.0.0.1",
       port: 7545,
       gas: 6721975,
-      network_id: "*" // Match any network id
+      network_id: "*"
     }
   }
 };
+
+
+
