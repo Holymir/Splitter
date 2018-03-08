@@ -2,23 +2,7 @@ App = {
   web3Provider: null,
   contracts: {},
 
-  init: function() {
-    // Load pets.
-    // $.getJSON('../pets.json', function(data) {
-    //   var petsRow = $('#petsRow');
-    //   var petTemplate = $('#petTemplate');
-
-    //   for (i = 0; i < data.length; i ++) {
-    //     petTemplate.find('.panel-title').text(data[i].name);
-    //     petTemplate.find('img').attr('src', data[i].picture);
-    //     petTemplate.find('.pet-breed').text(data[i].breed);
-    //     petTemplate.find('.pet-age').text(data[i].age);
-    //     petTemplate.find('.pet-location').text(data[i].location);
-    //     petTemplate.find('.btn-adopt').attr('data-id', data[i].id);
-
-    //     petsRow.append(petTemplate.html());
-    //   }
-    // });
+  init: function() {   
 
     return App.initWeb3();
   },
@@ -34,6 +18,7 @@ App = {
     web3 = new Web3(App.web3Provider);
 
         return App.initContract();
+        //return App.bindEvents();
     },
 
   initContract: function() {
@@ -54,28 +39,42 @@ App = {
 
   bindEvents: function() {
     $(document).on('click', '#sendClick', App.handleSplit);
+    $(document).on('click', '#getClick', App.handleGet);
   },
 
-  // markAdopted: function(adopters, account) {
-  //   var splitterInstance;
+  handleGet: function(event) {
 
-  // App.contracts.Splitter.deployed().then(function(instance) {
-  //   splitterInstance = instance;
+    //event.preventDefault();    
+    console.log("get hitted")
 
-  //   return splitterInstance.getAdopters.call();
-  //     }).then(function(adopters) {
-  //       for (i = 0; i < adopters.length; i++) {
-  //         if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
-  //           $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
-  //         }
-  //       }
-  //     }).catch(function(err) {
-  //       console.log(err.message);
-  //   });
-  // },
+    var splitterInstance;
+
+    web3.eth.getAccounts(function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+
+      var account = accounts[0];
+      //console.log(account.toString());
+
+      App.contracts.Splitter.deployed().then(function(instance) {
+        splitterInstance = instance;
+
+        // Execute adopt as a transaction by sending account
+        return splitterInstance.show(account);
+      }).then(function(result) {
+        console.log(result);
+        //return App.bindEvents();
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+    });
+
+  },
 
   handleSplit: function(event) {
     event.preventDefault();
+    console.log("split hitted")
 
     var addr1 = $('#addr1').val();
     var addr2 = $('#addr2').val();
@@ -88,15 +87,21 @@ App = {
         console.log(error);
       }
 
+      // var tx = {from: web3.eth.accounts[1]};
+      // SubCoin.send.sendTransaction(web3.eth.accounts[0], 1000, tx);
+
       var account = accounts[0];
+      //console.log(account);
+      //var tx = {from: account};
 
       App.contracts.Splitter.deployed().then(function(instance) {
         splitterInstance = instance;
 
         // Execute adopt as a transaction by sending account
-        return splitterInstance.split(addr1, addr2, amount);
+        splitterInstance.split(addr1, addr2, {value: web3.toWei(amount, 'ether')});
       }).then(function(result) {
-        return console.log("stana");
+        console.log(result);
+        //return App.bindEvents();
       }).catch(function(err) {
         console.log(err.message);
       });
