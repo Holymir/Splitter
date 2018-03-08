@@ -26,6 +26,12 @@ contract('Splitter', function(accounts) {
 		
 	});	
 
+	it('has an correct owner', async function () {
+
+      assert.equal(await contract.owner(), owner)
+
+    })
+
 	it("it should split corectly from owner to acc1", async function() {
 
 		await contract.split(accOne, accTwo, {from: owner, value: 500});
