@@ -37,13 +37,13 @@ contract('Splitter', function(accounts) {
 
 	it("it should split corectly from owner to accOne and accTwo when value is even", async function() {
 
-		contractBallanceAccOne = await contract.participants(accOne);
-		contractBallanceAccTwo = await contract.participants(accTwo);
+		contractBallanceAccOne = await contract.balances(accOne);
+		contractBallanceAccTwo = await contract.balances(accTwo);
 
 		await contract.split(accOne, accTwo, {from: owner, value: 500});
 
-		let newContractBallanceAccOne = await contract.participants(accOne);
-		let newContractBallanceAccTwo = await contract.participants(accTwo);
+		let newContractBallanceAccOne = await contract.balances(accOne);
+		let newContractBallanceAccTwo = await contract.balances(accTwo);
 
 		assert.strictEqual(newContractBallanceAccOne.toNumber(), contractBallanceAccOne.toNumber() + 250, "doesn't split corectly from owner to accOne");
 		assert.strictEqual(newContractBallanceAccTwo.toNumber(), contractBallanceAccTwo.toNumber() + 250, "doesn't split corectly from owner to accTwo");				
@@ -51,15 +51,15 @@ contract('Splitter', function(accounts) {
 
 	it("it should split corectly from owner to accOne and accTwo when value is odd", async function() {
 
-		contractBallanceOwner = await contract.participants(owner);
-		contractBallanceAccOne = await contract.participants(accOne);
-		contractBallanceAccTwo = await contract.participants(accTwo);
+		contractBallanceOwner = await contract.balances(owner);
+		contractBallanceAccOne = await contract.balances(accOne);
+		contractBallanceAccTwo = await contract.balances(accTwo);
 
 		await contract.split(accOne, accTwo, {from: owner, value: 501});
 
-		let newContractBallanceOwner = await contract.participants(owner);
-		let newContractBallanceAccOne = await contract.participants(accOne);
-		let newContractBallanceAccTwo = await contract.participants(accTwo);
+		let newContractBallanceOwner = await contract.balances(owner);
+		let newContractBallanceAccOne = await contract.balances(accOne);
+		let newContractBallanceAccTwo = await contract.balances(accTwo);
 
 		assert.strictEqual(newContractBallanceOwner.toNumber(), contractBallanceOwner.toNumber() + 1, "doesn't split corectly to Owner");
 		assert.strictEqual(newContractBallanceAccOne.toNumber(), contractBallanceAccOne.toNumber() + 250, "doesn't split corectly from owner to accOne");
@@ -68,14 +68,14 @@ contract('Splitter', function(accounts) {
 
 	it("it should split corectly from owner to accOne and accTwo twice in a row", async function() {
 
-		contractBallanceAccOne = await contract.participants(accOne);
-		contractBallanceAccTwo = await contract.participants(accTwo);
+		contractBallanceAccOne = await contract.balances(accOne);
+		contractBallanceAccTwo = await contract.balances(accTwo);
 
 		await contract.split(accOne, accTwo, {from: owner, value: 500});
 		await contract.split(accOne, accTwo, {from: owner, value: 200});
 
-		let newContractBallanceAccOne = await contract.participants(accOne);
-		let newContractBallanceAccTwo = await contract.participants(accTwo);
+		let newContractBallanceAccOne = await contract.balances(accOne);
+		let newContractBallanceAccTwo = await contract.balances(accTwo);
 
 		assert.strictEqual(newContractBallanceAccOne.toNumber(), contractBallanceAccOne.toNumber() + 350, "doesn't split corectly from owner to accOne");
 		assert.strictEqual(newContractBallanceAccTwo.toNumber(), contractBallanceAccTwo.toNumber() + 350, "doesn't split corectly from owner to accTwo");				
@@ -83,16 +83,16 @@ contract('Splitter', function(accounts) {
 
 	it("it should split corectly two transactions between three participants", async function() {
 
-		contractBallanceAccOne = await contract.participants(accOne);
-		contractBallanceAccTwo = await contract.participants(accTwo);
-		contractBallanceAccThree = await contract.participants(accThree);
+		contractBallanceAccOne = await contract.balances(accOne);
+		contractBallanceAccTwo = await contract.balances(accTwo);
+		contractBallanceAccThree = await contract.balances(accThree);
 
 		await contract.split(accOne, accTwo, {from: owner, value: 300});
 		await contract.split(accOne, accThree, {from: owner, value: 260});
 
-		let newContractBallanceAccOne = await contract.participants(accOne);
-		let newContractBallanceAccTwo = await contract.participants(accTwo);
-		let newContractBallanceAccThree = await contract.participants(accThree);
+		let newContractBallanceAccOne = await contract.balances(accOne);
+		let newContractBallanceAccTwo = await contract.balances(accTwo);
+		let newContractBallanceAccThree = await contract.balances(accThree);
 
 
 		assert.strictEqual(newContractBallanceAccOne.toNumber(), contractBallanceAccOne.toNumber() + 280, "doesn't split corectly from owner to accOne");
@@ -105,12 +105,12 @@ contract('Splitter', function(accounts) {
 	it("it should withdraw corectly from contract to accOne", async function() {
 
 		await contract.split(accOne, accTwo, {from: owner, value: 500});
-		contractBallanceAccOne = await contract.participants(accOne);		
+		contractBallanceAccOne = await contract.balances(accOne);		
 		//console.log(contractBallanceAccOne.toNumber())
 		assert.strictEqual(contractBallanceAccOne.toNumber(), 250, "doesn't withdraw correct");
 
 		await contract.withDraw({from: accOne});
-		let newContractBallanceAccOne = await contract.participants(accOne);
+		let newContractBallanceAccOne = await contract.balances(accOne);
 		//console.log(newContractBallanceAccOne.toNumber())		
 
 		assert.strictEqual(newContractBallanceAccOne.toNumber(), 0, "doesn't withdraw correct");
@@ -122,4 +122,36 @@ contract('Splitter', function(accounts) {
 		let _owner = await contract.owner();	
 		assert.strictEqual(_owner, "0x0");		
 	});
+
+	it("should emit event on split", async function () {
+
+			const expectedEvent = 'Deposit';
+			let result = await contract.split(accOne, accTwo, {from: owner, value: 500});
+
+			assert.lengthOf(result.logs, 1, "There should be 1 event emitted from setRate!");
+			assert.strictEqual(result.logs[0].event, expectedEvent, `The event emitted was ${result.logs[0].event} instead of ${expectedEvent}`);
+		});
+
+	it("should emit event on withdraw", async function () {
+
+			const expectedEvent = 'WithDraw';
+
+			await contract.split(accOne, accTwo, {from: owner, value: 500});
+			let result = await contract.withDraw({from: accOne});
+
+			//console.log(result.logs[0]);
+			assert.lengthOf(result.logs, 1, "There should be 1 event emitted from setRate!");
+			assert.strictEqual(result.logs[0].event, expectedEvent, `The event emitted was ${result.logs[0].event} instead of ${expectedEvent}`);
+		});
+
+	it("should emit when owner is killed", async function () {
+
+			const expectedEvent = 'Killed';
+
+			let result = await contract.kill({from: owner});
+			
+			console.log(result.logs[0]);
+			assert.lengthOf(result.logs, 1, "There should be 1 event emitted from setRate!");
+			assert.strictEqual(result.logs[0].event, expectedEvent, `The event emitted was ${result.logs[0].event} instead of ${expectedEvent}`);
+		});
 });
