@@ -51,6 +51,7 @@ contract('Splitter', function(accounts) {
         	});				  
 	});		
 
+	//with custum expectThrow()
 	it("should not be able send ethers to empty address /expectThrow/", async function () {
 
 		await expectThrow(contract.split("", accOne, {from: owner, value: web3.toWei(10, 'ether')})
