@@ -55,6 +55,6 @@ contract Splitter {
 	
 	function kill() public{
 	    require(owner == msg.sender);
-	    selfdestruct(owner);
+	    selfdestruct(this);
 	}
 }

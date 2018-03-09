@@ -115,4 +115,11 @@ contract('Splitter', function(accounts) {
 
 		assert.strictEqual(newContractBallanceAccOne.toNumber(), 0, "doesn't withdraw correct");
 	});
+
+	it("it should selfdestruct contract", async function() {
+
+		await contract.kill({from: owner});
+		let _owner = await contract.owner();	
+		assert.strictEqual(_owner, "0x0");		
+	});
 });
