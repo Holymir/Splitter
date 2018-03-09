@@ -9,32 +9,27 @@ contract Splitter {
         owner = msg.sender;
     }
 
-	modifier isAddressValid(address _addr) { 
+	modifier onlyAddressValid(address _addr) { 
 		require(_addr != address(0)); 
 		_; 
 	}
 
-	modifier isOwner(address _ownerAddr) { 
-		require(_ownerAddr == owner); 
+	modifier onlyOwner() { 
+		require(msg.sender == owner); 
 		_; 
 	}
 	
 
 	function split(address _addr1, address _addr2) public payable 
-		isAddressValid(_addr1) 
-		isAddressValid(_addr2)
-		isOwner(msg.sender) {
+		onlyAddressValid(_addr1) 
+		onlyAddressValid(_addr2)
+		onlyOwner() {
 
 		require(msg.value > 0);
 		require(owner != _addr1 && owner != _addr2);
 
 		uint amount = msg.value;
-
-		if(amount % 2 == 1) {
-			amount -= 1;
-			participants[owner] += 1;
-		}
-
+		participants[owner] += amount % 2;
         amount /= 2;
 
         participants[_addr1] += amount;
@@ -42,19 +37,15 @@ contract Splitter {
 	}
 
 	function withDraw() public {
-
-		// msg.sender.transfer(participants[msg.sender]);
-		// participants[msg.sender] = 0;
-		address sender = msg.sender;
-		uint amountToWithDraw = participants[sender];
+		
+		uint amountToWithDraw = participants[msg.sender];
 		require(amountToWithDraw > 0);
-		participants[sender] = 0;		
-		sender.transfer(amountToWithDraw);		
+		participants[msg.sender] = 0;		
+		msg.sender.transfer(amountToWithDraw);		
 	}
 	
 	
-	function kill() public{
-	    require(owner == msg.sender);
+	function kill() public onlyOwner(){
 	    selfdestruct(this);
 	}
 }
