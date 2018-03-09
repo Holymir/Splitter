@@ -1,3 +1,4 @@
+const expectThrow = require("./util").expectThrow;
 var Splitter = artifacts.require("./Splitter.sol");
 
 contract('Splitter', function(accounts) {
@@ -48,6 +49,23 @@ contract('Splitter', function(accounts) {
 			.catch(function (err) {
 				assert.strictEqual(err.message, "VM Exception while processing transaction: revert", "other Error");
         	});				  
-	});	
+	});		
 
+	it("should not be able send ethers to empty address /expectThrow/", async function () {
+
+		await expectThrow(contract.split("", accOne, {from: owner, value: web3.toWei(10, 'ether')})
+
+	)});
+
+	it("should not be able send more than senders ballance /expectThrow/", async function () {
+
+		await expectThrow(contract.split(accTwo, accOne, {from: owner, value: web3.toWei(200, 'ether')})
+
+	)});
+
+	it("should not be able send ethers to yourself /expectThrow/", async function () {
+
+		await expectThrow(contract.split(owner, accOne, {from: owner, value: web3.toWei(10, 'ether')})
+
+	)});
 });
